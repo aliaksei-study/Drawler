@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+
+        android:title="Эффекты">
+        <menu>
+            <item
+                android:id="@+id/normal"
+                android:title="Нормальный" />
+            <item
+                android:id="@+id/emboss"
+                android:title="Тень" />
+            <item
+                android:id="@+id/blur"
+                android:title="Туманный" />
+        </menu>
+    </item>
+    <item
+
+        android:title="Размер кисточки">
+        <menu>
+            <item
+                android:id="@+id/size_normal"
+                android:title="Нормальный" />
+            <item
+                android:id="@+id/size_small"
+                android:title="Маленький" />
+            <item
+                android:id="@+id/size_big"
+                android:title="Большой"></item>
+        </menu>
+    </item>
+    <item
+
+        android:title="Цвет">
+
+        <menu>
+            <item
+                android:id="@+id/color_black"
+                android:title="Черный"></item>
+            <item
+                android:id="@+id/color_red"
+                android:title="Красный" />
+            <item
+                android:id="@+id/color_green"
+                android:title="Зеленый" />
+        </menu>
+    </item>
+
+    <item
+
+        android:title="Фигуры">
+
+        <menu>
+            <item
+                android:id="@+id/figure_rectangle"
+                android:title="Прямоугольник"></item>
+            <item
+                android:id="@+id/figure_circle"
+                android:title="Круг" />
+            <item
+                android:id="@+id/figure_triangle"
+                android:title="Треугольник" />
+            <item
+                android:id="@+id/figure_line"
+                android:title="Линия" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/clear"
+        android:title="Стереть" />
+
+    <item
+        android:id="@+id/remove_last"
+        android:title="Стереть последний" />
+
+    <item
+        android:id="@+id/save"
+        android:title="Сохранить" />
+
+</menu>
