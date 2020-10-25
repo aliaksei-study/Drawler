@@ -9,24 +9,29 @@ import android.graphics.EmbossMaskFilter;
 import android.graphics.MaskFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
-public class PaintView extends View {
+public class PaintView extends androidx.appcompat.widget.AppCompatImageView {
     public static int BRUSH_SIZE = 20;
     public static final int DEFAULT_COLOR = Color.RED;
-    public static final int DEFAULT_BG_COLOR = Color.WHITE;
     private static final float TOUCH_TOLERANCE = 4;
     private float mX, mY;
     private Path mPath;
     private Paint mPaint;
     private ArrayList<FingerPath> paths = new ArrayList<>();
     private int currentColor;
-    private int backgroundColor = DEFAULT_BG_COLOR;
     private int strokeWidth;
     private boolean emboss;
     private boolean blur;
@@ -84,14 +89,20 @@ public class PaintView extends View {
     public void size_small() {
         strokeWidth = 5;
     }
+    @Deprecated
     public void color_green() {
         currentColor = Color.GREEN;
     }
+    @Deprecated
     public void color_red() {
         currentColor = Color.RED;
     }
+    @Deprecated
     public void color_black() {
         currentColor = Color.BLACK;
+    }
+    public void setColor(int color) {
+        currentColor = color;
     }
 
     public void emboss() {
@@ -105,7 +116,6 @@ public class PaintView extends View {
     }
 
     public void clear() {
-        backgroundColor = DEFAULT_BG_COLOR;
         paths.clear();
         normal();
         invalidate();
@@ -113,7 +123,6 @@ public class PaintView extends View {
 
     public void deleteLastPath() {
         if(paths.size() != 0) {
-            backgroundColor = DEFAULT_BG_COLOR;
             paths.remove(paths.size() - 1);
             normal();
             invalidate();
@@ -123,7 +132,7 @@ public class PaintView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.save();
-        mCanvas.drawColor(backgroundColor);
+        mCanvas.drawColor(Color.WHITE);
 
         for (FingerPath fp : paths) {
             mPaint.setColor(fp.getColor());
@@ -166,6 +175,7 @@ public class PaintView extends View {
                     mY = y;
                     break;
                 case RECTANGLE:
+                    mPath.reset();
                     drawRectangle(x, y);
                     break;
                 case CIRCLE:

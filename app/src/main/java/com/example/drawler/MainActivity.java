@@ -1,23 +1,41 @@
 package com.example.drawler;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.PermissionRequest;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.UUID;
 
+import top.defaults.colorpicker.ColorPickerPopup;
+
 public class MainActivity extends AppCompatActivity {
+    private static final int SELECT_PICTURE = 1;
 
     private PaintView paintView;
 
@@ -62,14 +80,22 @@ public class MainActivity extends AppCompatActivity {
             case R.id.size_big:
                 paintView.size_big();
                 return true;
-            case R.id.color_green:
-                paintView.color_green();
-                return true;
-            case R.id.color_red:
-                paintView.color_red();
-                return true;
-            case R.id.color_black:
-                paintView.color_black();
+            case R.id.color:
+                new ColorPickerPopup.Builder(this)
+                        .initialColor(Color.RED) // Set initial color
+                        .enableBrightness(true) // Enable brightness slider or not
+                        .enableAlpha(true) // Enable alpha slider or not
+                        .okTitle("Choose")
+                        .cancelTitle("Cancel")
+                        .showIndicator(true)
+                        .showValue(true)
+                        .build()
+                        .show(paintView, new ColorPickerPopup.ColorPickerObserver() {
+                            @Override
+                            public void onColorPicked(int color) {
+                                paintView.setColor(color);
+                            }
+                        });
                 return true;
             case R.id.remove_last:
                 paintView.deleteLastPath();
@@ -89,9 +115,50 @@ public class MainActivity extends AppCompatActivity {
             case R.id.save:
                 showSavePaintingConfirmationDialog();
                 return true;
+//            case R.id.load:
+//                loadInternalImage();
+//                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadInternalImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_PICTURE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+
+                Uri selectedImageURI = data.getData();
+
+                Picasso.get().load(selectedImageURI).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        paintView.setBackground(new BitmapDrawable(getApplicationContext().getResources(), bitmap));
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
+            }
+
+        }
     }
 
     private void showSavePaintingConfirmationDialog(){
